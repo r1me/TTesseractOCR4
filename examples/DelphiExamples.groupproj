@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{9C9E5375-BF85-4357-A678-0F79A2E29EB2}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="delphi-vcl-image\delphi_vcl_image.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="delphi-console-simple\delphi_console_simple.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="delphi-console-pdfconvert\delphi_console_pdfconvert.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="delphi_vcl_image">
+        <MSBuild Projects="delphi-vcl-image\delphi_vcl_image.dproj"/>
+    </Target>
+    <Target Name="delphi_vcl_image:Clean">
+        <MSBuild Projects="delphi-vcl-image\delphi_vcl_image.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="delphi_vcl_image:Make">
+        <MSBuild Projects="delphi-vcl-image\delphi_vcl_image.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="delphi_console_simple">
+        <MSBuild Projects="delphi-console-simple\delphi_console_simple.dproj"/>
+    </Target>
+    <Target Name="delphi_console_simple:Clean">
+        <MSBuild Projects="delphi-console-simple\delphi_console_simple.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="delphi_console_simple:Make">
+        <MSBuild Projects="delphi-console-simple\delphi_console_simple.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="delphi_console_pdfconvert">
+        <MSBuild Projects="delphi-console-pdfconvert\delphi_console_pdfconvert.dproj"/>
+    </Target>
+    <Target Name="delphi_console_pdfconvert:Clean">
+        <MSBuild Projects="delphi-console-pdfconvert\delphi_console_pdfconvert.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="delphi_console_pdfconvert:Make">
+        <MSBuild Projects="delphi-console-pdfconvert\delphi_console_pdfconvert.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="delphi_vcl_image;delphi_console_simple;delphi_console_pdfconvert"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="delphi_vcl_image:Clean;delphi_console_simple:Clean;delphi_console_pdfconvert:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="delphi_vcl_image:Make;delphi_console_simple:Make;delphi_console_pdfconvert:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
