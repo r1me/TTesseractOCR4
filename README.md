@@ -8,7 +8,7 @@ Examples were tested in Delphi 10.2 Tokyo Starter (**32-bit**) and Lazarus 1.8.
 
 1. Clone this repository to a local folder.
 2. Obtain Tesseract 4.x binaries. There are many sources to download binaries from, or ways to build them. I recommend using latest version, build from master branch of the project.  
-In Windows: there is no official installer. You can [download precompiled binaries](http://r1me.pl/tesseractocr-master.zip) ([*Microsoft Visual C++ 2017 Redistributable x86*](https://go.microsoft.com/fwlink/?LinkId=746571) must be installed on the computer) and copy all DLL files to `bin\`. If you want to compile Tesseract, here are [compiling instructions](https://github.com/tesseract-ocr/tesseract/wiki/Compiling#windows) (Visual Studio 2015/2017 and CPPAN) is reommended).
+In Windows: there is no official installer. You can [download precompiled binaries](http://r1me.pl/tesseractocr-master.zip) ([*Microsoft Visual C++ 2017 Redistributable x86*](https://go.microsoft.com/fwlink/?LinkId=746571) must be installed on the computer) and copy all DLL files to `bin\`. If you want to build Tesseract: [compiling instructions](https://github.com/tesseract-ocr/tesseract/wiki/Compiling#windows) (the easiest way is to use Visual Studio 2015/2017 and CPPAN).
 3. Download trained language data files from [tesseract-ocr/tessdata/](https://github.com/tesseract-ocr/tessdata/) to `bin\tessdata`.  
 All examples in this repository require English data file ([`eng.traineddata`](https://github.com/tesseract-ocr/tessdata/blob/master/eng.traineddata)).  
 Additionally `examples\delphi-console-pdfconvert` requires also  [`osd.traineddata`](https://github.com/tesseract-ocr/tessdata/blob/master/osd.traineddata) and [`pdf.ttf`](https://github.com/tesseract-ocr/tesseract/blob/master/tessdata/pdf.ttf).
@@ -16,8 +16,8 @@ Additionally `examples\delphi-console-pdfconvert` requires also  [`osd.trainedda
    - `examples\delphi-console-simple`. Recognize text in `samples\eng-text.png` and write to console output
    ![delphi-console-simple](examples/delphi-console-simple/delphi-console-simple.png)
    
-   - `examples\delphi-vcl-image`.  
-   ![delphi-vcl-image](examples/delphi-vcl-image/delphi-vcl-image.gif)
+   - `examples\delphi-vcl-image`  
+   ![delphi-vcl-image](examples/delphi-vcl-image/delphi-vcl-image.gif)  
    4 tabs: 
       - Image: View input image
       - Text: Recognized text coded as UTF-8
