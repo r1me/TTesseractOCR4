@@ -3,7 +3,7 @@ unit tesseractocr.utils;
 { The MIT License (MIT)
 
  TTesseractOCR4
- Copyright (c) 2017 Damian Woroch, http://r1me.pl
+ Copyright (c) 2018 Damian Woroch, http://rime.ddns.net/
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

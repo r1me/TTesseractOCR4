@@ -99,7 +99,7 @@ begin
   Tesseract.OnRecognizeBegin := OnRecognizeBegin;
   Tesseract.OnRecognizeProgress := OnRecognizeProgress;
   Tesseract.OnRecognizeEnd := OnRecognizeEnd;
-  if not Tesseract.Initialize('tessdata\', 'eng', oemDefault) then
+  if not Tesseract.Initialize('tessdata' + PathDelim, 'eng', oemDefault) then
   begin
     MessageDlg('Error loading Tesseract data', mtError, [mbOk], 0);
     Application.ShowMainForm := False;

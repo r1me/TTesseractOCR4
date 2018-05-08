@@ -3,7 +3,7 @@ unit tesseractocr.leptonica;
 { The MIT License (MIT)
 
  TTesseractOCR4
- Copyright (c) 2017 Damian Woroch, http://r1me.pl
+ Copyright (c) 2018 Damian Woroch, http://rime.ddns.net/
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -120,7 +120,7 @@ var
 
 implementation
 uses
-  {$IFNDEF FPC}Winapi.Windows{$ELSE}dynlibs, SysUtils{$ENDIF};
+  {$IFNDEF FPC}Winapi.Windows, System.SysUtils{$ELSE}dynlibs, SysUtils{$ENDIF};
 
 var
   hLeptonicaLib: THandle;
@@ -135,40 +135,36 @@ begin
 end;
 
 function InitLeptonicaLib: Boolean;
+
+  function GetLeptonicaProcAddress(var AProcPtr: Pointer; AProcName: AnsiString): Boolean;
+  begin
+    AProcPtr := GetProcAddress(hLeptonicaLib, {$IFDEF FPC}AProcName{$ELSE}PAnsiChar(AProcName){$ENDIF});
+    Result := Assigned(AProcPtr);
+    if not Result then
+      raise Exception.Create('Error while loading Leptonica function: ' + String(AProcName));
+  end;
+
 begin
   Result := False;
 
   if (hLeptonicaLib = 0) then
   begin
-    hLeptonicaLib := LoadLibrary({$IFDEF FPC}ExtractFilePath(ParamStr(0)) + libleptonica{$ELSE}PChar(libleptonica){$ENDIF});
+    hLeptonicaLib := LoadLibrary({$IFDEF FPC}libleptonica{$ELSE}PChar(libleptonica){$ENDIF});
     if (hLeptonicaLib <> 0) then
     begin
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixRead{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixRead');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixDestroy{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixDestroy');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaGetBox{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'boxaGetBox');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaGetCount{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'boxaGetCount');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxDestroy{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'boxDestroy');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaDestroy{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'boxaDestroy');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixReadMem{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixReadMem');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixWriteMemPng{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixWriteMemPng');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixWriteMemBmp{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixWriteMemBmp');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixDeskew{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'pixDeskew');
-      {$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}lept_free{$IFDEF FPC}){$ENDIF} := GetProcAddress(hLeptonicaLib, 'lept_free');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixRead{$IFDEF FPC}){$ENDIF}, 'pixRead');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixDestroy{$IFDEF FPC}){$ENDIF}, 'pixDestroy');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaGetBox{$IFDEF FPC}){$ENDIF}, 'boxaGetBox');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaGetCount{$IFDEF FPC}){$ENDIF}, 'boxaGetCount');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxDestroy{$IFDEF FPC}){$ENDIF}, 'boxDestroy');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}boxaDestroy{$IFDEF FPC}){$ENDIF}, 'boxaDestroy');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixReadMem{$IFDEF FPC}){$ENDIF}, 'pixReadMem');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixWriteMemPng{$IFDEF FPC}){$ENDIF}, 'pixWriteMemPng');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixWriteMemBmp{$IFDEF FPC}){$ENDIF}, 'pixWriteMemBmp');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}pixDeskew{$IFDEF FPC}){$ENDIF}, 'pixDeskew');
+      GetLeptonicaProcAddress({$IFNDEF FPC}@{$ELSE}Pointer({$ENDIF}lept_free{$IFDEF FPC}){$ENDIF}, 'lept_free');
 
-      Result := Assigned(pixRead) and
-                Assigned(pixDestroy) and
-                Assigned(boxaGetBox) and
-                Assigned(boxaGetCount) and
-                Assigned(boxDestroy) and
-                Assigned(boxaDestroy) and
-                Assigned(pixReadMem) and
-                Assigned(pixWriteMemPng) and
-                Assigned(pixWriteMemBmp) and
-                Assigned(pixDeskew) and
-                Assigned(lept_free);
-
-      if not Result then
-        FreeLeptonicaLib;
+      Result := True;
     end;
   end;
 end;

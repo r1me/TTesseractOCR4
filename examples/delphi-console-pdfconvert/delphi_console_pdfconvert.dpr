@@ -5,6 +5,7 @@ program delphi_console_pdfconvert;
 {$R *.res}
 
 uses
+  System.SysUtils,
   tesseractocr in '..\..\tesseractocr.pas';
 
 var
@@ -13,9 +14,9 @@ var
 begin
   Tesseract := TTesseractOCR4.Create;
   try
-    if Tesseract.Initialize('tessdata\', 'eng') then
+    if Tesseract.Initialize('tessdata' + PathDelim, 'eng') then
     begin
-      inputFileName := 'samples\multi-page.tif';
+      inputFileName := 'samples' + PathDelim + 'multi-page.tif';
       outputFileName := 'multi-page.pdf';
 
       if Tesseract.CreatePDF(inputFileName, outputFileName) then

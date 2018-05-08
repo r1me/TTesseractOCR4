@@ -3,7 +3,7 @@ unit tesseractocr.consts;
 { The MIT License (MIT)
 
  TTesseractOCR4
- Copyright (c) 2017 Damian Woroch, http://r1me.pl
+ Copyright (c) 2018 Damian Woroch, http://rime.ddns.net/
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -30,15 +30,15 @@ type
   PUTF8Char = PAnsiChar;
 {$ENDIF}
 
-{$DEFINE Use_CPPAN_Binaries}
+{$DEFINE USE_CPPAN_BINARIES}
 
 const
-  {$IFDEF Use_CPPAN_Binaries}
-  libleptonica = {$IFDEF Linux}'libpvt.cppan.demo.danbloomberg.leptonica-1.74.4.so'{$ELSE}'pvt.cppan.demo.danbloomberg.leptonica-1.74.4.dll'{$ENDIF};
+  {$IFDEF USE_CPPAN_BINARIES}
+  libleptonica = {$IFDEF Linux}'libpvt.cppan.demo.danbloomberg.leptonica-1.76.0.so'{$ELSE}'pvt.cppan.demo.danbloomberg.leptonica-1.76.0.dll'{$ENDIF};
   libtesseract = {$IFDEF Linux}'libpvt.cppan.demo.google.tesseract.libtesseract-master.so'{$ELSE}'pvt.cppan.demo.google.tesseract.libtesseract-master.dll'{$ENDIF};
   {$ELSE}
-  libleptonica = {$IFDEF Linux}'liblept.so.5.0.1.so'{$ELSE}'liblept-5.dll'{$ENDIF};
-  libtesseract = {$IFDEF Linux}'libtesseract.so.4.0.0.so'{$ELSE}'libtesseract-4.dll'{$ENDIF};
+  libleptonica = {$IFDEF Linux}'liblept.so.5'{$ELSE}'liblept-5.dll'{$ENDIF};
+  libtesseract = {$IFDEF Linux}'libtesseract.so.4'{$ELSE}'libtesseract-4.dll'{$ENDIF};
   {$ENDIF}
 
 implementation

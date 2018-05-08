@@ -5,14 +5,15 @@ program lazarus_console_simple;
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
   Classes,
+  SysUtils,
   tesseractocr;
 
 begin
   Tesseract := TTesseractOCR4.Create;
   try
-    if Tesseract.Initialize('tessdata\', 'eng') then
+    if Tesseract.Initialize('tessdata' + PathDelim, 'eng') then
     begin
-      Tesseract.SetImage('samples\eng-text.png');
+      Tesseract.SetImage('samples' + PathDelim + 'eng-text.png');
       WriteLn(Tesseract.RecognizeAsText);
     end;
   finally

@@ -5,14 +5,15 @@ program delphi_console_simple;
 {$R *.res}
 
 uses
+  System.SysUtils,
   tesseractocr in '..\..\tesseractocr.pas';
 
 begin
   Tesseract := TTesseractOCR4.Create;
   try
-    if Tesseract.Initialize('tessdata\', 'eng') then
+    if Tesseract.Initialize('tessdata' + PathDelim, 'eng') then
     begin
-      Tesseract.SetImage('samples\eng-text.png');
+      Tesseract.SetImage('samples' + PathDelim + 'eng-text.png');
       WriteLn(Tesseract.RecognizeAsText);
       ReadLn;
     end;
