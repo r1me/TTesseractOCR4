@@ -12,6 +12,7 @@ Examples were tested in Delphi 10.2.3 (32-bit build for Windows) and Lazarus 1.8
   [*Microsoft Visual C++ 2017 Redistributable x86*](https://go.microsoft.com/fwlink/?LinkId=746571) must be installed on the computer.  
   - Linux: `sudo apt install tesseract-ocr`.  
   This will also install required shared libraries (liblept5 and libtesseract4).
+  - Common: Set `{$DEFINE USE_CPPAN_BINARIES}` accordingly in `tesseractocr.consts.pas` if using Tesseract libraries built with CPPAN (defined as default).
 3. Download trained language data files from [tesseract-ocr/tessdata/](https://github.com/tesseract-ocr/tessdata/) to `bin\tessdata`.  
 All examples in this repository require English data file ([`eng.traineddata`](https://github.com/tesseract-ocr/tessdata/blob/master/eng.traineddata)).  
 Additionally `examples\delphi-console-pdfconvert` example requires [`osd.traineddata`](https://github.com/tesseract-ocr/tessdata/blob/master/osd.traineddata) and [`pdf.ttf`](https://github.com/tesseract-ocr/tesseract/blob/master/tessdata/pdf.ttf) files.  
