@@ -87,61 +87,110 @@ type
     procedure SynchronizeBegin;
     procedure SynchronizeEnd;
   public
-    // Initializes Tesseract
+    /// <summary>
+    /// Initializes Tesseract
+    /// </summary>
     function Initialize(ADataPath, ALanguage: String; AEngineMode: TOcrEngineMode = oemDefault): Boolean;
-    // Read configuration file
+    /// <summary>
+    /// Read configuration file
+    /// </summary>
     procedure ReadConfigFile(AFileName: String);
-    // Read/write configuration variables
+    /// <summary>
+    /// Read/write configuration variables
+    /// </summary>
     function SetVariable(AName: String; AValue: String): Boolean;
     function GetIntVariable(AName: String): Integer;
     function GetBoolVariable(AName: String): Boolean;
     function GetFloatVariable(AName: String): Double;
     function GetStringVariable(AName: String): String;
-    // Returns True if language is loaded
+    /// <summary>
+    /// Returns True if language is loaded
+    /// </summary>
     function IsLanguageLoaded(ALanguage: String): Boolean;
-    // Set source image from a file (uses Leptonica library)
+    /// <summary>
+    /// Set source image from a stream (uses Leptonica library).
+    /// </summary>
+    function SetImage(AStream: TMemoryStream): Boolean; overload;
+    /// <summary>
+    /// Set source image from a file (uses Leptonica library)
+    /// </summary>
     function SetImage(AFileName: String): Boolean; overload;
-    // Set source image from a TBitmap
+    /// <summary>
+    /// Set source image from a TBitmap
+    /// </summary>
     function SetImage(const ABitmap: {$IFNDEF FPC}Vcl.Graphics.{$ENDIF}TBitmap): Boolean; overload;
-    // Set source image from a memory buffer
+    /// <summary>
+    /// Set source image from a memory buffer
+    /// </summary>
     function SetImage(const ABuffer: Pointer; AImageWidth, AImageHeight: Integer;
       ABytesPerPixel: Integer; ABytesPerLine: Integer): Boolean; overload;
-    // Deskew source image
+    /// <summary>
+    /// Deskew source image
+    /// </summary>
     procedure DeskewSourceImage;
-    // Limit recognition area
+    /// <summary>
+    /// Limit recognition area
+    /// </summary>
     procedure SetRectangle(ARectangle: TRect);
-    // Set source image PPI
+    /// <summary>
+    /// Set source image PPI
+    /// </summary>
     procedure SetSourceResolution(APPI: Integer);
-    // Get source image as TPNGImage
+    /// <summary>
+    /// Get source image as TPNGImage
+    /// </summary>
     function GetSourceImagePNG: {$IFNDEF FPC}Vcl.Imaging.pngimage.TPngImage{$ELSE}TPortableNetworkGraphic{$ENDIF};
-    // Get source image as TBitmap
+    /// <summary>
+    /// Get source image as TBitmap
+    /// </summary>
     function GetSourceImageBMP: {$IFNDEF FPC}Vcl.Graphics.{$ENDIF}TBitmap;
-    // Perform OCR and layout analyse. Will create a separate thread if AInThread
-    // is set to True (default)
+    /// <summary>
+    /// Perform OCR and layout analyse. Will create a separate thread if AInThread
+    /// is set to True (default)
+    /// </summary>
     procedure Recognize(AUseThread: Boolean = True);
-    // Perform OCR and return UTF-8 text (without layout analyse)
+    /// <summary>
+    /// Perform OCR and return UTF-8 text (without layout analyse)
+    /// </summary>
     function RecognizeAsText: String;
-    // Cancel current recognize operation
+    /// <summary>
+    /// Cancel current recognize operation
+    /// </summary>
     procedure CancelRecognize;
-    // Creates PDF file (source image and searchable text)
+    /// <summary>
+    /// Creates PDF file (source image and searchable text)
+    /// </summary>
     function CreatePDF(ASourceFileName: String; AOutputFileName: String): Boolean;
-    // Get/set page segmentation mode
+    /// <summary>
+    /// Get/set page segmentation mode
+    /// </summary>
     property PageSegMode: TessPageSegMode read GetPageSegMode write SetPageSegMode;
-    // True if OCR'ing
+    /// <summary>
+    /// True if OCR'ing
+    /// </summary>
     property Busy: Boolean read FBusy;
-    // OCR progress (0-100)
+    /// <summary>
+    /// OCR progress (0-100)
+    /// </summary>
     property Progress: Integer read FProgress write FProgress;
-    // Recognized text coded as UTF-8
+    /// <summary>
+    /// Recognized text coded as UTF-8
+    /// </summary>
     property UTF8Text: String read FUTF8Text write FUTF8Text;
-    // Recognized text in HTML format
+    /// <summary>
+    /// Recognized text in HTML format
+    /// </summary>
     property HOCRText: String read FHOCRText write FHOCRText;
-    // Result of page layout analysis
+    /// <summary>
+    /// Result of page layout analysis
+    /// </summary>
     property PageLayout: TTesseractPageLayout read FPageLayout;
-    // Events
+    /// <summary>
+    /// Events
+    /// </summary>
     property OnRecognizeBegin: TNotifyEvent read FOnRecognizeBegin write FOnRecognizeBegin;
     property OnRecognizeProgress: TRecognizerProgressEvent read FOnRecognizeProgress write FOnRecognizeProgress;
     property OnRecognizeEnd: TRecognizerEndEvent read FOnRecognizeEnd write FOnRecognizeEnd;
-
     constructor Create;
     destructor Destroy; override;
   end;
@@ -335,6 +384,25 @@ begin
   begin
     TessBaseAPISetImage(FTessBaseAPI, ABuffer, AImageWidth, AImageHeight,
       ABytesPerPixel, ABytesPerLine);
+    Result := True;
+  end;
+end;
+
+function TTesseractOCR4.SetImage(AStream: TMemoryStream): Boolean;
+begin
+  Result := False;
+  if FBusy then
+    Exit;
+  if Assigned(FSourcePixImage) then
+  begin
+    pixDestroy(FSourcePixImage);
+    FSourcePixImage := nil;
+  end;
+  AStream.Position := 0;
+  FSourcePixImage := pixReadMem(AStream.Memory, AStream.Size);
+  if Assigned(FSourcePixImage) then
+  begin
+    TessBaseAPISetImage2(FTessBaseAPI, FSourcePixImage);
     Result := True;
   end;
 end;
