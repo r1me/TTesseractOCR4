@@ -71,7 +71,6 @@ type
     FProgressMonitor: ETEXT_DESC;
     FDataPath: String;
     FRecognizerThread: TRecognizerThread;
-    procedure RecognizeInternal;
     procedure RecognizeInternal(ASilent: Boolean);
   private
     FUTF8Text: String;
