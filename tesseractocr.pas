@@ -1,20 +1,21 @@
 unit tesseractocr;
 
+
 { The MIT License (MIT)
- 
+
  TTesseractOCR4
  Copyright (c) 2018 Damian Woroch, http://rime.ddns.net/
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -70,7 +71,7 @@ type
     FProgressMonitor: ETEXT_DESC;
     FDataPath: String;
     FRecognizerThread: TRecognizerThread;
-    procedure RecognizeInternal;
+    procedure RecognizeInternal(ASilent: Boolean);
   private
     FUTF8Text: String;
     FHOCRText: String;
@@ -87,61 +88,110 @@ type
     procedure SynchronizeBegin;
     procedure SynchronizeEnd;
   public
-    // Initializes Tesseract
+    /// <summary>
+    /// Initializes Tesseract
+    /// </summary>
     function Initialize(ADataPath, ALanguage: String; AEngineMode: TOcrEngineMode = oemDefault): Boolean;
-    // Read configuration file
+    /// <summary>
+    /// Read configuration file
+    /// </summary>
     procedure ReadConfigFile(AFileName: String);
-    // Read/write configuration variables
+    /// <summary>
+    /// Read/write configuration variables
+    /// </summary>
     function SetVariable(AName: String; AValue: String): Boolean;
     function GetIntVariable(AName: String): Integer;
     function GetBoolVariable(AName: String): Boolean;
     function GetFloatVariable(AName: String): Double;
     function GetStringVariable(AName: String): String;
-    // Returns True if language is loaded
+    /// <summary>
+    /// Returns True if language is loaded
+    /// </summary>
     function IsLanguageLoaded(ALanguage: String): Boolean;
-    // Set source image from a file (uses Leptonica library)
+    /// <summary>
+    /// Set source image from a stream (uses Leptonica library).
+    /// </summary>
+    function SetImage(AStream: TMemoryStream): Boolean; overload;
+    /// <summary>
+    /// Set source image from a file (uses Leptonica library)
+    /// </summary>
     function SetImage(AFileName: String): Boolean; overload;
-    // Set source image from a TBitmap
+    /// <summary>
+    /// Set source image from a TBitmap
+    /// </summary>
     function SetImage(const ABitmap: {$IFNDEF FPC}Vcl.Graphics.{$ENDIF}TBitmap): Boolean; overload;
-    // Set source image from a memory buffer
+    /// <summary>
+    /// Set source image from a memory buffer
+    /// </summary>
     function SetImage(const ABuffer: Pointer; AImageWidth, AImageHeight: Integer;
       ABytesPerPixel: Integer; ABytesPerLine: Integer): Boolean; overload;
-    // Deskew source image
+    /// <summary>
+    /// Deskew source image
+    /// </summary>
     procedure DeskewSourceImage;
-    // Limit recognition area
+    /// <summary>
+    /// Limit recognition area
+    /// </summary>
     procedure SetRectangle(ARectangle: TRect);
-    // Set source image PPI
+    /// <summary>
+    /// Set source image PPI
+    /// </summary>
     procedure SetSourceResolution(APPI: Integer);
-    // Get source image as TPNGImage
+    /// <summary>
+    /// Get source image as TPNGImage
+    /// </summary>
     function GetSourceImagePNG: {$IFNDEF FPC}Vcl.Imaging.pngimage.TPngImage{$ELSE}TPortableNetworkGraphic{$ENDIF};
-    // Get source image as TBitmap
+    /// <summary>
+    /// Get source image as TBitmap
+    /// </summary>
     function GetSourceImageBMP: {$IFNDEF FPC}Vcl.Graphics.{$ENDIF}TBitmap;
-    // Perform OCR and layout analyse. Will create a separate thread if AInThread
-    // is set to True (default)
-    procedure Recognize(AUseThread: Boolean = True);
-    // Perform OCR and return UTF-8 text (without layout analyse)
-    function RecognizeAsText: String;
-    // Cancel current recognize operation
+    /// <summary>
+    /// Perform OCR and layout analyse. Will create a separate thread if AInThread
+    /// is set to True (default)
+    /// </summary>
+    procedure Recognize(AUseThread: Boolean = True; ASilent: Boolean = False);
+    /// <summary>
+    /// Perform OCR and return UTF-8 text (without layout analyse)
+    /// </summary>
+    function RecognizeAsText(ASilent: Boolean = False): String;
+    /// <summary>
+    /// Cancel current recognize operation
+    /// </summary>
     procedure CancelRecognize;
-    // Creates PDF file (source image and searchable text)
+    /// <summary>
+    /// Creates PDF file (source image and searchable text)
+    /// </summary>
     function CreatePDF(ASourceFileName: String; AOutputFileName: String): Boolean;
-    // Get/set page segmentation mode
+    /// <summary>
+    /// Get/set page segmentation mode
+    /// </summary>
     property PageSegMode: TessPageSegMode read GetPageSegMode write SetPageSegMode;
-    // True if OCR'ing
+    /// <summary>
+    /// True if OCR'ing
+    /// </summary>
     property Busy: Boolean read FBusy;
-    // OCR progress (0-100)
+    /// <summary>
+    /// OCR progress (0-100)
+    /// </summary>
     property Progress: Integer read FProgress write FProgress;
-    // Recognized text coded as UTF-8
+    /// <summary>
+    /// Recognized text coded as UTF-8
+    /// </summary>
     property UTF8Text: String read FUTF8Text write FUTF8Text;
-    // Recognized text in HTML format
+    /// <summary>
+    /// Recognized text in HTML format
+    /// </summary>
     property HOCRText: String read FHOCRText write FHOCRText;
-    // Result of page layout analysis
+    /// <summary>
+    /// Result of page layout analysis
+    /// </summary>
     property PageLayout: TTesseractPageLayout read FPageLayout;
-    // Events
+    /// <summary>
+    /// Events
+    /// </summary>
     property OnRecognizeBegin: TNotifyEvent read FOnRecognizeBegin write FOnRecognizeBegin;
     property OnRecognizeProgress: TRecognizerProgressEvent read FOnRecognizeProgress write FOnRecognizeProgress;
     property OnRecognizeEnd: TRecognizerEndEvent read FOnRecognizeEnd write FOnRecognizeEnd;
-
     constructor Create;
     destructor Destroy; override;
   end;
@@ -150,8 +200,8 @@ var
   Tesseract: TTesseractOCR4 = nil;
 
 implementation
-uses
-  tesseractocr.utils;
+
+uses tesseractocr.utils;
 
 var
   CancelOCR: Boolean;
@@ -339,6 +389,25 @@ begin
   end;
 end;
 
+function TTesseractOCR4.SetImage(AStream: TMemoryStream): Boolean;
+begin
+  Result := False;
+  if FBusy then
+    Exit;
+  if Assigned(FSourcePixImage) then
+  begin
+    pixDestroy(FSourcePixImage);
+    FSourcePixImage := nil;
+  end;
+  AStream.Position := 0;
+  FSourcePixImage := pixReadMem(AStream.Memory, AStream.Size);
+  if Assigned(FSourcePixImage) then
+  begin
+    TessBaseAPISetImage2(FTessBaseAPI, FSourcePixImage);
+    Result := True;
+  end;
+end;
+
 procedure TTesseractOCR4.DeskewSourceImage;
 var
   deskewedImage: PPix;
@@ -421,10 +490,13 @@ end;
 
 function ProgressCallback(progress: Integer; left, right, top, bottom: Integer): Boolean; cdecl;
 begin
-  if Assigned(Tesseract.OnRecognizeProgress) then
+  if Assigned(Tesseract) then
   begin
-    Tesseract.Progress := progress;
-    TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeProgress);
+    if Assigned(Tesseract.OnRecognizeProgress) then
+    begin
+      Tesseract.Progress := progress;
+      TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeProgress);
+    end;
   end;
   Result := False;
 end;
@@ -447,7 +519,7 @@ begin
     OnRecognizeEnd(Self, CancelOCR);
 end;
 
-procedure TTesseractOCR4.RecognizeInternal;
+procedure TTesseractOCR4.RecognizeInternal(ASilent: Boolean);
 begin
   FBusy := True;
   FillChar(FProgressMonitor, SizeOf(FProgressMonitor), #0);
@@ -456,40 +528,42 @@ begin
   CancelOCR := False;
   FUTF8Text := '';
   FHOCRText := '';
-
-  TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeBegin);
+  if not ASilent then
+    TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Self.SynchronizeBegin);
   try
-    if (TessBaseAPIRecognize(FTessBaseAPI, FProgressMonitor) = 0) then
-    begin
-      FUTF8Text := PUTF8CharToString(TessBaseAPIGetUTF8Text(FTessBaseAPI));
-      FUTF8Text := StringReplace(FUTF8Text, #10, #13#10, [rfReplaceAll]);
-      FHOCRText := PUTF8CharToString(TessBaseAPIGetHOCRText(FTessBaseAPI, 0));
-      FHOCRText := StringReplace(FHOCRText, #10, #13#10, [rfReplaceAll]);
-      if FLayoutAnalyse then FPageLayout.AnalyseLayout;
-    end else
+    if not (TessBaseAPIRecognize(FTessBaseAPI, FProgressMonitor) = 0) then
       Exit;
+    FUTF8Text := PUTF8CharToString(TessBaseAPIGetUTF8Text(FTessBaseAPI));
+    FUTF8Text := StringReplace(FUTF8Text, #10, #13#10, [rfReplaceAll]);
+    FHOCRText := PUTF8CharToString(TessBaseAPIGetHOCRText(FTessBaseAPI, 0));
+    FHOCRText := StringReplace(FHOCRText, #10, #13#10, [rfReplaceAll]);
+    if FLayoutAnalyse then
+      FPageLayout.AnalyseLayout;
   finally
     FBusy := False;
-    TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeEnd);
+    if not ASilent then
+      TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Self.SynchronizeEnd);
   end;
 end;
 
-procedure TTesseractOCR4.Recognize(AUseThread: Boolean);
+procedure TTesseractOCR4.Recognize(AUseThread, ASilent: Boolean);
 begin
-  if FBusy then Exit;
+  if FBusy then
+    Exit;
   FLayoutAnalyse := True;
   if AUseThread then
     FRecognizerThread := TRecognizerThread.Create(Self)
   else
-    RecognizeInternal;
+    RecognizeInternal(ASilent);
 end;
 
-function TTesseractOCR4.RecognizeAsText: String;
+function TTesseractOCR4.RecognizeAsText(ASilent: Boolean): String;
 begin
   Result := '';
-  if FBusy then Exit;
+  if FBusy then
+    Exit;
   FLayoutAnalyse := False;
-  RecognizeInternal;
+  RecognizeInternal(ASilent);
   Result := FUTF8Text;
 end;
 
@@ -541,7 +615,7 @@ end;
 
 procedure TTesseractOCR4.TRecognizerThread.Execute;
 begin
-  FOwner.RecognizeInternal;
+  FOwner.RecognizeInternal(False);
 end;
 
 end.
