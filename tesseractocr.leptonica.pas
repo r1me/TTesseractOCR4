@@ -48,11 +48,13 @@ type
     w: l_uint32;
     h: l_uint32;
     d: l_uint32;
+    spp: l_uint32;     //*!< number of samples per pixel       */
     wpl: l_uint32;
     refcount: l_uint32;
     xres: l_int32;
     yres: l_int32;
     informat: l_int32;
+    special: l_int32;   //*!< special instructions for I/O, etc */
     text: PUTF8Char;
     colormap: PPixColormap;
     data: pl_uint32;
