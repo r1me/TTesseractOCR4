@@ -448,6 +448,8 @@ begin
 end;
 
 procedure TTesseractOCR4.RecognizeInternal;
+var
+  oldExceptionMask: TArithmeticExceptionMask;
 begin
   FBusy := True;
   FillChar(FProgressMonitor, SizeOf(FProgressMonitor), #0);
@@ -459,6 +461,8 @@ begin
 
   TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeBegin);
   try
+    oldExceptionMask := GetExceptionMask;
+    SetExceptionMask(exAllArithmeticExceptions);
     if (TessBaseAPIRecognize(FTessBaseAPI, FProgressMonitor) = 0) then
     begin
       FUTF8Text := PUTF8CharToString(TessBaseAPIGetUTF8Text(FTessBaseAPI));
@@ -469,6 +473,7 @@ begin
     end else
       Exit;
   finally
+    SetExceptionMask(oldExceptionMask);
     FBusy := False;
     TThread.Synchronize(nil, {$IFDEF FPC}@{$ENDIF}Tesseract.SynchronizeEnd);
   end;
